@@ -1,0 +1,14 @@
+Options -Indexes
+
+RewriteEngine On
+#pls un-comment in prod !!!
+#RewriteCond %{HTTPS} off
+#RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^auth/login  ?page=auth&action=login [L]
+RewriteRule ^auth/register  ?page=auth&action=register [L]
+RewriteRule ^auth/logout$  ?page=auth&action=logout [L]
+RewriteRule ^auth  ?page=auth [L]
+RewriteRule ^user/profile$  ?page=user/profile [L]
