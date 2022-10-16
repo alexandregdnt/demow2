@@ -7,8 +7,18 @@ RewriteEngine On
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+
 RewriteRule ^auth/login  ?page=auth&action=login [L]
 RewriteRule ^auth/register  ?page=auth&action=register [L]
 RewriteRule ^auth/logout$  ?page=auth&action=logout [L]
 RewriteRule ^auth  ?page=auth [L]
-RewriteRule ^user/profile$  ?page=user/profile [L]
+
+RewriteRule ^post/([0-9]{0,11})/edit$  ?page=post&action=edit&id=$1 [L]
+RewriteRule ^post/([0-9]{0,11})/delete$  ?page=post&action=delete&id=$1 [L]
+RewriteRule ^post/([0-9]{0,11})$  ?page=post&action=view&id=$1 [L]
+RewriteRule ^post/create$  ?page=post&action=create [L]
+
+RewriteRule ^user/([0-9]{0,11})/edit$  ?page=user&action=edit&id=$1 [L]
+RewriteRule ^user/([0-9]{0,11})/delete$  ?page=user&action=delete&id=$1 [L]
+RewriteRule ^user/([0-9]{0,11})$  ?page=user&action=view&id=$1 [L]
+RewriteRule ^user$  ?page=user&action=view [L]

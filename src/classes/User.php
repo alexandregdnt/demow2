@@ -1,43 +1,34 @@
 <?php
 
 class User {
-    private $id;
-    private $username;
-    private $email;
-    private $phone;
-    private $role;
-    private $password;
-    private $firstname;
-    private $lastname;
-    private $date_of_birth;
-    private $avatar_url;
-    private $created_at;
-    private $updated_at;
+    private int | null $id = null;
+    private string $username = '';
+    private string $email = '';
+    private string | null $phone = null;
+    private string | null $bio = null;
+    private string $role = 'user';
+    private string $password = '';
+    private string $firstname = '';
+    private string $lastname = '';
+    private string | null $date_of_birth = null;
+    private string | null $avatar_url = null;
+    private string $created_at;
+    private string $updated_at;
 
-    # CONSTRACTOR
+    # CONSTRUCTORS
     public function __construct()
     {
-        $this->id = null;
-        $this->username = "";
-        $this->email = "";
-        $this->phone = "";
-        $this->role = "user";
-        $this->password = "";
-        $this->firstname = "";
-        $this->lastname = "";
-        $this->date_of_birth = "";
-        $this->avatar_url = "";
-        $this->created_at = null;
-        $this->updated_at = null;
+        $this->created_at = date('Y-m-d H:i:s');
+        $this->updated_at = date('Y-m-d H:i:s');
     }
-
-    public static function copy(User $user): User
+    public function __copy(User $user): User
     {
         $instance = new self();
         $instance->id = $user->getId();
         $instance->username = $user->getUsername();
         $instance->email = $user->getEmail();
         $instance->phone = $user->getPhone();
+        $instance->bio = $user->getBio();
         $instance->role = $user->getRole();
         $instance->password = $user->getPassword();
         $instance->firstname = $user->getFirstname();
@@ -50,166 +41,190 @@ class User {
     }
 
     # GETTERS
-    public function getId() {
+    public function getId(): ?int
+    {
         return $this->id;
     }
 
-    public function getUsername() {
+    public function getUsername(): string
+    {
         return $this->username;
     }
 
-    public function getEmail() {
+    public function getEmail(): string
+    {
         return $this->email;
     }
 
-    public function getPhone() {
+    public function getPhone(): ?string
+    {
         return $this->phone;
     }
 
-    public function getRole() {
+    public function getBio(): ?string
+    {
+        return $this->bio;
+    }
+
+    public function getRole(): string
+    {
         return $this->role;
     }
 
-    public function getPassword() {
+    public function getPassword(): string
+    {
         return $this->password;
     }
 
-    public function getFirstname() {
+    public function getFirstname(): string
+    {
         return $this->firstname;
     }
 
-    public function getLastname() {
+    public function getLastname(): string
+    {
         return $this->lastname;
     }
 
-    public function getDateOfBirth() {
+    public function getDateOfBirth(): ?string
+    {
         return $this->date_of_birth;
     }
 
-    public function getAvatarUrl() {
+    public function getAvatarUrl(): ?string
+    {
         return $this->avatar_url;
     }
 
-    public function getCreatedAt() {
+    public function getCreatedAt(): string
+    {
         return $this->created_at;
     }
 
-    public function getUpdatedAt() {
+    public function getUpdatedAt(): string
+    {
         return $this->updated_at;
     }
 
     # SETTERS
-    public function setId($id) {
+    public function setId($id): void
+    {
         $this->id = $id;
     }
 
-    public function setUsername($username) {
+    public function setUsername($username): void
+    {
         $this->username = $username;
     }
 
-    public function setEmail($email) {
+    public function setEmail($email): void
+    {
         $this->email = $email;
     }
 
-    public function setPhone($phone) {
+    public function setPhone($phone): void
+    {
         $this->phone = $phone;
     }
 
-    public function setRole($role) {
+    public function setBio($bio): void
+    {
+        $this->bio = $bio;
+    }
+
+    public function setRole($role): void
+    {
         $this->role = $role;
     }
 
-    public function setPassword($password) {
+    public function setPassword($password): void
+    {
         $this->password = $password;
     }
 
-    public function setFirstname($firstname) {
+    public function setFirstname($firstname): void
+    {
         $this->firstname = $firstname;
     }
 
-    public function setLastname($lastname) {
+    public function setLastname($lastname): void
+    {
         $this->lastname = $lastname;
     }
 
-    public function setDateOfBirth($date_of_birth) {
+    public function setDateOfBirth($date_of_birth): void
+    {
         $this->date_of_birth = $date_of_birth;
     }
 
-    public function setAvatarUrl($avatar_url) {
+    public function setAvatarUrl($avatar_url): void
+    {
         $this->avatar_url = $avatar_url;
     }
 
-    public function setCreatedAt($created_at) {
+    public function setCreatedAt($created_at): void
+    {
         $this->created_at = $created_at;
     }
 
-    public function setUpdatedAt($updated_at) {
+    public function setUpdatedAt($updated_at): void
+    {
         $this->updated_at = $updated_at;
     }
 
     # DATABASE METHODS
-    private function push($db_result) {
-        $this->id = $db_result['user_id'];
-        $this->username = $db_result['username'];
-        $this->email = $db_result['email'];
-        $this->phone = $db_result['phone'];
-        $this->role = $db_result['role'];
-        $this->password = $db_result['password'];
-        $this->firstname = $db_result['firstname'];
-        $this->lastname = $db_result['lastname'];
-        $this->date_of_birth = $db_result['date_of_birth'];
-        $this->avatar_url = $db_result['avatar_url'];
-        $this->created_at = $db_result['created_at'];
-        $this->updated_at = $db_result['updated_at'];
-    }
-
-    public function get($id): bool
+    public static function getById(int $id): User | bool
     {
         $db = bdd_connection();
-        $statement = $db->prepare("SELECT * FROM users WHERE user_id = :id");
+        $query = "SELECT * FROM users WHERE id = :id";
+        $statement = $db->prepare($query);
         $statement->bindValue(":id", $id);
         $statement->execute();
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-        if ($result) {
-            $this->push($result);
-            return true;
-        } else {
-            return false;
-        }
+        $statement->setFetchMode(PDO::FETCH_CLASS, "User");
+        return $statement->fetch();
     }
-    public function getByAuthenticationMethod($value, $method = null): bool
+    public static function getByEmail(string $email): User | bool
     {
-        if (empty($method)) $method = preg_match("/@/", $value) ? "email" : (preg_match("/^0[0-9]{9}$/", $value) ? "phone" : "username");
         $db = bdd_connection();
-
-        switch ($method) {
-            case "email":
-                $statement = $db->prepare("SELECT * FROM users WHERE email = :value");
-                break;
-            case "phone":
-                $statement = $db->prepare("SELECT * FROM users WHERE phone = :value");
-                break;
-            case "username":
-                $statement = $db->prepare("SELECT * FROM users WHERE username = :value");
-                break;
-            default:
-                return false;
-        }
-        $statement->bindValue(":value", $value);
+        $query = "SELECT * FROM users WHERE email = :email";
+        $statement = $db->prepare($query);
+        $statement->bindValue(":email", $email);
         $statement->execute();
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-        if ($result) {
-            $this->push($result);
-            return true;
-        } else {
-            return false;
-        }
+        $statement->setFetchMode(PDO::FETCH_CLASS, "User");
+        return $statement->fetch();
+    }
+    public static function getByUsername(string $username): User | bool
+    {
+        $db = bdd_connection();
+        $query = "SELECT * FROM users WHERE username = :username";
+        $statement = $db->prepare($query);
+        $statement->bindValue(":username", $username);
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_CLASS, "User");
+        return $statement->fetch();
+    }
+    public static function getByPhone(string $phone): User | bool
+    {
+        $db = bdd_connection();
+        $query = "SELECT * FROM users WHERE phone = :phone";
+        $statement = $db->prepare($query);
+        $statement->bindValue(":phone", $phone);
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_CLASS, "User");
+        return $statement->fetch();
+    }
+    public static function getAll(): array
+    {
+        $db = bdd_connection();
+        $query = "SELECT * FROM users";
+        $statement = $db->prepare($query);
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_CLASS, "User");
+        return $statement->fetchAll();
     }
 
-
-    public function create() {
+    public function create(): void
+    {
         $db = bdd_connection();
         $request = $db->prepare("
             INSERT INTO users (email, username, phone, password, firstname, lastname, date_of_birth, created_at, updated_at)
@@ -229,17 +244,19 @@ class User {
 
         $this->id = $db->lastInsertId();
     }
-    public function update() {
+    public function update(): void
+    {
         $db = bdd_connection();
         $request = $db->prepare("
             UPDATE users
-            SET email = ?, username = ?, phone = ?, password = ?, firstname = ?, lastname = ?, date_of_birth = ?, updated_at = ?
-            WHERE user_id = ?;");
+            SET email = ?, username = ?, phone = ?, bio = ?, password = ?, firstname = ?, lastname = ?, date_of_birth = ?, updated_at = ?
+            WHERE id = ?;");
 
         $request->execute(array(
             $this->email,
             $this->username,
             $this->phone,
+            $this->bio,
             $this->password,
             $this->firstname,
             $this->lastname,
@@ -248,7 +265,19 @@ class User {
             $this->id
         ));
     }
-    public function save() {
+    public function delete(): void
+    {
+        $db = bdd_connection();
+        $request = $db->prepare("
+            DELETE FROM users
+            WHERE id = ?;");
+
+        $request->execute(array(
+            $this->id
+        ));
+    }
+    public function save(): void
+    {
         if ($this->id == null) {
             $this->create();
         } else {

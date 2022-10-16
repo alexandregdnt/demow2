@@ -15,11 +15,11 @@ if (!isset($_GET['page']) && http_response_code() == 200) {
         case 'auth':
             controller('auth');
             break;
-        case 'user':
-            controller('user');
-            break;
         case 'post':
             controller('post');
+            break;
+        case 'user':
+            controller('user');
             break;
         default:
             controller('error');
